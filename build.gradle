@@ -1,0 +1,33 @@
+apply plugin: 'scala'
+
+repositories{
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies{
+    compile "org.scala-lang:scala-library:2.11.8"
+    compile group: 'com.typesafe.akka', name: 'akka-actor_2.11', version: '2.4.7'
+    compile group: 'com.typesafe.akka', name: 'akka-remote_2.11', version: '2.4.7'
+    compile group: 'com.typesafe.akka', name: 'akka-testkit_2.11', version: '2.4.7'
+    testCompile group: 'org.scalatest', name: 'scalatest_2.11', version: '2.2.4'
+    testCompile group: 'org.scalamock', name: 'scalamock-scalatest-support_2.11', version: '3.2.2'
+}
+
+task runTest(type: JavaExec, dependsOn: classes) {
+    main = 'org.scalatest.run'
+    args = ['models.DialogueSpec', 'actors.AskerTest', 'actors.ChatterTest']
+    classpath = sourceSets.test.runtimeClasspath
+}
+
+task runServer(type: JavaExec, dependsOn: classes) {
+    main = 'RemoteMain'
+    classpath sourceSets.main.runtimeClasspath
+    classpath configurations.runtime
+}
+
+task runClient(type: JavaExec, dependsOn: classes) {
+    main = 'LocalMain'
+    classpath sourceSets.main.runtimeClasspath
+    classpath configurations.runtime
+}
